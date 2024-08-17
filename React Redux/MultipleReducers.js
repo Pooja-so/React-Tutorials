@@ -4,6 +4,11 @@ const redux = require("redux");
 const createStore = redux.createStore;
 const combineReducers = redux.combineReducers;
 
+//------ importing redux-logger and required function for middleware ---------
+const reduxLogger = require("redux-logger");
+const applyMiddleware = redux.applyMiddleware;
+const logger = reduxLogger.createLogger();
+
 //* Step 1: Defining states for corresponding reducers
 const initialCakeState = {
   numberOfCakes: 10,
@@ -31,6 +36,7 @@ function buyIceCream() {
 }
 
 //* Step 3: Defining reducers
+// reducer(prevState, action) = newState
 const cakeReducer = (state = initialCakeState, action) => {
   switch (action.type) {
     case BUY_CAKE:
@@ -55,8 +61,9 @@ const rootReducer = combineReducers({
   iceCream: iceCreamReducer,
 });
 
+// ------------ Applying Middleware --------------
 //* Step 5: Creating Redux store
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 //* Step 6:
 
@@ -64,7 +71,7 @@ console.log("Initial State: ", store.getState());
 
 // 6.2: Subscribe the application with the store
 const unsubcribe = store.subscribe(() =>
-  console.log("Updated State: ", store.getState())
+  console.log("\n Updated State: ", store.getState())
 );
 
 // 6.3: dispatch an action
